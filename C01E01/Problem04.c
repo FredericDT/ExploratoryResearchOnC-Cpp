@@ -10,6 +10,6 @@ int main() {
 	scanf("%f", &radius);
 	float perimeter = radius > 0.0 ? 2 * PI * radius : 0.0;
 	float area = radius > 0.0 ? PI * radius * radius : 0.0;
-	printf("The perimiter is %.4lf, the area is %.4lf.", perimeter, area);
+	printf("The perimiter is %.4lf, the area is %.4f.", perimeter, area);
 	return 0;
 }
