@@ -10,7 +10,7 @@ int main() {
     int length = 0;
     while (length < 100) {
         char current = getchar();
-        if (current == '\n') {
+        if (current == '\n' || current == EOF) {
             break;
         }
         input[length++] = current;
