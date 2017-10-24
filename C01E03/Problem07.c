@@ -5,13 +5,19 @@
  *
  * */
 int main() {
-    char * input;
-    printf("please input a string: ");
+    char input[100];
+    //printf("please input a string: ");
     int length = 0;
-    while ((input[length++] = getchar()) != '\n');
-    printf("%s",input);
-    int sumOfEngChar, sumOfSpace, sumOfNumber, sumOfOther, index = 0;
-    for (index = 0; index < length - 1; ) {
+    while (length < 100) {
+        char current = getchar();
+        if (current == '\n') {
+            break;
+        }
+        input[length++] = current;
+    }
+    //printf("%s",input);
+    int sumOfEngChar = 0, sumOfSpace = 0, sumOfNumber = 0, sumOfOther = 0, index = 0;
+    for (index = 0; index < length; ) {
         if (('a' <= input[index] && input[index] <= 'z') || ('A' <= input[index] && input[index] <= 'Z')) {
             sumOfEngChar++;
         } else if (' ' == input[index]) {
