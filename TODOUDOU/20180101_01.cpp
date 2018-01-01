@@ -25,6 +25,7 @@ int main() {
     int travelled[26] = {0};
     parseLongest(inputArray, 0, 0, travelled, 0, &longest, n, m);
     printf("%d\n", longest);
+    free(inputArray);
     return 0;
 }
 
