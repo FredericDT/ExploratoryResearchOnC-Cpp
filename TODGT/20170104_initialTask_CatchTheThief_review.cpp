@@ -11,10 +11,10 @@ int main()
  int b = 0;
  for (int i = 0; i <= 100; i++)
  {
-  if (i <= '0 '&&i <= '100')
+  if (i <= '0 '&&i <= '100')//'100'写法语法错误，参照阅读关键字"char类型"
   {
-   num = i + 1;
-   range = int(p[i] - 0);
+   num = i + 1;//num 变量内容未初始化
+   range = int(p[i] - 0);//p[i] - 0 等价于p[i]
   }
 
   if (p[i] == 'X')
@@ -27,7 +27,7 @@ int main()
  int d = 0;
  for (int i = 0; i <= 100; i++)
  {
-  c[i] = fabs(a[i] - num);
+  c[i] = fabs(a[i] - num);//不安全的类型强转
  }
 
  for (int i = 0; i <= 100; i++)
@@ -39,4 +39,11 @@ int main()
  }
  cout << d;
  return 0;
+}
+
+/*
+ * 此方法用于取代fabs
+ */
+int intAbs(int input) {
+ return input >= 0 ? input : -input;
 }
