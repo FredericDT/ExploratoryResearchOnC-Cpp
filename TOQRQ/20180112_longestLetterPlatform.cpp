@@ -33,4 +33,5 @@ int main() {
     }
     max = max < current ? current : max;
     std::cout << max << std::endl;
+    return 0;
 }
