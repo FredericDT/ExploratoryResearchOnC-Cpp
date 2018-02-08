@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 
@@ -6,9 +7,8 @@ using namespace std;
 template<typename T>
 class LinkedList {
 public:
-    LinkedList() : tail(new LinkedListNode(NULL)), head(new LinkedListNode(NULL, NULL)), current(this->head) {
+    LinkedList() : tail(new LinkedListNode(NULL)), head(new LinkedListNode(NULL)), current(this->head) {
         this->head->next = this->tail;
-        //this->tail->next = NULL;
     }
 
     LinkedList *insert(T value) {
@@ -24,7 +24,7 @@ public:
     }
 
     T getCurrentValue() {
-        return this->current->next != NULL ? this->current->next->value : NULL;
+        return this->current->next != nullptr ? this->current->next->value : NULL;
     }
 
     LinkedList *toHead() {
@@ -73,11 +73,11 @@ private:
         T value;
         LinkedListNode *next;
 
-        LinkedListNode() : value(NULL), next(NULL) {}
+        LinkedListNode() : value(NULL), next(nullptr) {}
 
         LinkedListNode(T value, LinkedListNode *next) : value(value), next(next) {}
 
-        explicit LinkedListNode(T value) : value(value), next(NULL) {}
+        explicit LinkedListNode(T value) : value(value), next(nullptr) {}
 
         inline T operator()() {
             return this->value;
@@ -96,11 +96,7 @@ private:
     unsigned int size = 0;
 };
 
-bool stringEquals(const string a, const string b) {
-    return a == b;
-}
-
-void println(const string i) {
+void println(const string &i) {
     std::cout << i << std::endl;
 }
 
@@ -110,28 +106,27 @@ int main() {
     while (true) {
         println("input: [q, insert, next, delete, current, size, istail, tohead]");
         std::cin >> command;
-        //mmp!
-        if (stringEquals(command, "q")) {
+        if (command == "q") {
             break;
-        } else if (stringEquals(command, "insert")) {
+        } else if (command == "insert") {
             println("input a value");
             int value;
             std::cin >> value;
             list->insert(value);
             std::cout << "inserted " << value << std::endl;
-        } else if (stringEquals(command, "next")) {
+        } else if (command == "next") {
             list->next();
             println("moved");
-        } else if (stringEquals(command, "delete")) {
+        } else if (command == "delete") {
             list->deleteCurrent();
             println("deleted");
-        } else if (stringEquals(command, "current")) {
+        } else if (command == "current") {
             std::cout << "current value: " << list->getCurrentValue() << std::endl;
-        } else if (stringEquals(command, "size")) {
+        } else if (command == "size") {
             std::cout << "size: " << list->getSize() << std::endl;
-        } else if (stringEquals(command, "istail")) {
+        } else if (command == "istail") {
             std::cout << "istail: " << list->isTail() << std::endl;
-        } else if (stringEquals(command, "tohead")) {
+        } else if (command == "tohead") {
             list->toHead();
             println("moved");
         }
