@@ -110,6 +110,7 @@ int main() {
     while (true) {
         println("input: [q, insert, next, delete, current, size, istail, tohead]");
         std::cin >> command;
+        //mmp!
         if (stringEquals(command, "q")) {
             break;
         } else if (stringEquals(command, "insert")) {
