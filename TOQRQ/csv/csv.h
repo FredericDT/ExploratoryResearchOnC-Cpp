@@ -67,7 +67,7 @@ public:
         }
     };
 
-    void iterate(void (*func)(Row row)) {
+    void iterate(void (*func)(Row &row)) {
         ifstream file(this->path);
         string line;
         if (this->hasHeader) {
