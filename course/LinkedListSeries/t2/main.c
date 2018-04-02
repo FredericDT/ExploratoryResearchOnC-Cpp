@@ -15,17 +15,19 @@ void input(Node n, const char *name) {
     int i = 0;
     while (scanf("%d", &i)) {
         if (i < 0) {
+            n->next = 0;
             break;
         }
         n->next = newNode();
         n->next->value = i;
+        n->next->next = 0;
         n = n->next;
     }
 }
 
 void printList(Node h) {
     if (!(h->next)) {
-        printf("EMPTY LIST");
+        printf("EMPTY LIST\n");
         return;
     }
     while (h->next) {
@@ -54,7 +56,6 @@ int main() {
 
     Node a = headA;
     Node b = headB;
-
 
     if (b->next) {
         while (a->next) {
