@@ -20,7 +20,6 @@ void input(Node n, const char *name) {
         }
         n->next = newNode();
         n->next->value = i;
-        n->next->next = 0;
         n = n->next;
     }
 }
