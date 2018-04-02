@@ -20,6 +20,7 @@ void input(Node n, const char *name) {
         }
         n->next = newNode();
         n->next->value = i;
+        n->next->next = 0;
         n = n->next;
     }
 }
@@ -57,7 +58,7 @@ int main() {
     Node b = headB;
 
     if (b->next) {
-        while (a->next) {
+        while (a->next && b->next) {
             if (a->next->value > b->next->value) {
                 Node an = a->next;
                 a->next = b->next;
@@ -88,6 +89,7 @@ int main() {
     printList(headA);
     printf("B");
     printList(headB);
+
     freeList(headA);
     freeList(headB);
 
