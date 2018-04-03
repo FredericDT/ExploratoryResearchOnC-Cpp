@@ -51,7 +51,7 @@ Node parseHash(const int hash[128],int i, Node n) {
 int main() {
     int hash[128] = {0};
     //input
-    char c[1];
+    char c[2];
     while (scanf("%s", c)) {
         
         if (! strcmp("-1", c)) {
