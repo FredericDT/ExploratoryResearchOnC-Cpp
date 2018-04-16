@@ -172,8 +172,8 @@ void updateFuncWrapper() {
 
     while (1) {
         int id = 0;
-        rTrimStream(stdin);
         printf("please input an id (-1 means end):");
+        rTrimStream(stdin);
         scanf("%d", &id);
         if (id < 1) {
             break;
@@ -195,12 +195,14 @@ void updateFuncWrapper() {
         if (i != '\n') {
             ungetc(i, stdin);
             scanf("%[^\n]", r.name);
+            getchar();
         }
         printf("input amount:");
         i = getchar();
         if (i != '\n') {
             ungetc(i, stdin);
             scanf("%d", &r.amount);
+            getchar();
         }
         printf("input price:");
         i = getchar();
