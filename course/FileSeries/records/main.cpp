@@ -252,7 +252,7 @@ int main() {
         rTrimStream(stdin);
         int func = 0;
         scanf("%d", &func);
-        printf("%d", func);
+        //printf("%d", func);
         switch (func) {
             default:
             case 6:
