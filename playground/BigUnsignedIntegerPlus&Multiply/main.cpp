@@ -23,12 +23,9 @@
 #include <iostream>
 #include "clac.h"
 
-using namespace std;
-
-
 int main() {
-    string a = "5";
-    string r = "1";
+    std::string a = "5";
+    std::string r = "1";
     for (int i = 0; i < 1000; ++i) {
         r = multiply(r, a);
     }
