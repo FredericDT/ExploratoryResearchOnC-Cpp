@@ -25,8 +25,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 std::string stringPlus(std::string a, std::string b);
 
 std::string multiply(std::string a, std::string b);
