@@ -30,7 +30,7 @@ std::string stringPlus(std::string a, std::string b) {
     while (ai >= 0 || bi >= 0) {
         int pr = (ai >= 0 ? (a[ai] - '0') : 0) + (bi >= 0 ? (b[bi] - '0') : 0) + c;
         c = pr / 10;
-        r.insert(0, to_string(pr % 10));
+        r.insert(0, std::to_string(pr % 10));
         --ai;
         --bi;
     }
@@ -48,10 +48,10 @@ std::string multiply(std::string a, std::string b) {
         while (ai--) {
             int pr = (b[bi] - '0') * (a[ai] - '0') + c;
             c = pr / 10;
-            cr.insert(0, to_string(pr % 10));
+            cr.insert(0, std::to_string(pr % 10));
         }
         if (c) {
-            cr.insert(0, to_string(c));
+            cr.insert(0, std::to_string(c));
         }
         res = stringPlus(res, cr + suffix);
         suffix += "0";
