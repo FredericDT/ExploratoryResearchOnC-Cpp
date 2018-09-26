@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 class Solution {
-
+/* for problem on page 583*/
     public static void main(String[] args) {
         Solution s = new Solution();
         int r = s.count(3);
