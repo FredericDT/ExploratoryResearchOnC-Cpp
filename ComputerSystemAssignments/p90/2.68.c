@@ -4,7 +4,6 @@ int lower_one_mask(int n) {
 	int r = 1;
 	n != 1 && (r = (lower_one_mask(n - 1) << 1) + 1);
 	return r; 
-	//return (n == 1) | (lower_one_mask(n - 1) << 1) + 1;
 }
 
 int main() {
