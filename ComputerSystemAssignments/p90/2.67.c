@@ -2,12 +2,7 @@
 #include<limits.h>
 
 int bad_int_size_is_32() {
-	unsigned i = UINT_MAX;
-	int c = 0;
-	while(i >>= 1) {
-		++c;
-	}
-	return c == 31;
+	return (long) INT_MAX == 2147483647L;
 }
 
 int main() {
