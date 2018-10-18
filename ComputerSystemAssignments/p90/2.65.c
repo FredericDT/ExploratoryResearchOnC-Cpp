@@ -1,7 +1,11 @@
 #include<stdio.h>
 
 int odd_ones(unsigned x) {
-	return x != 0 && (odd_ones(x >> 1) ^ (x & 0b1));
+	x = x ^ (x >> 16);
+	x = x ^ (x >> 8);
+	x = x ^ (x >> 4);
+	x = x ^ (x >> 2);
+	return (x ^ (x >> 1)) & 1;
 }
 
 /*
@@ -42,6 +46,6 @@ int odd_ones(unsigned x) {
 */
 
 int main() {
-	printf("%d", odd_ones(3));
+	printf("%d", odd_ones(2));
 	return 0;
 }
