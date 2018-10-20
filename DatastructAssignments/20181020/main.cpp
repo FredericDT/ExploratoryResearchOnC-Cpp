@@ -8,15 +8,14 @@ struct node {
 };
 
 template<typename T>
-int remove(struct node<T> *n, int k1, int k2) {
+int remove(struct node<T> *n, int k1, int k2, void (*f)(T v)) {
     if (k1 > k2) {
         return 1;
     }
     if (k1 == k2) {
         return 0;
     }
-    --k1;
-    int i = 0;
+    int i = 1;
     while (n->next && i < k1) {
         n = n->next;
         ++i;
@@ -25,8 +24,10 @@ int remove(struct node<T> *n, int k1, int k2) {
         return 2;
     }
     while (n->next && i < k2) {
+        struct node<T> *p = n->next;
         n->next = n->next->next;
-        n = n->next;
+        f(p->value);
+        delete p;
         ++i;
     }
     if (i != k2) {
@@ -61,19 +62,22 @@ void reverse(T e[], int n) {
 }
 
 template<typename T>
-void freeLinkedList(struct node<T> *n) {
+void freeLinkedList(struct node<T> *n, void (*f)(T v)) {
     if (n->next) {
-        freeLinkedList(n->next);
+        freeLinkedList(n->next, f);
     }
+    f(n->value);
     delete n;
 }
+
+void f(int i) {}
 
 int main(int argc, char **argv) {
     int i[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     struct node<int> *l = create(i, 10);
-    remove(l, 2, 5);
+    remove(l, 2, 7, &f);
     reverse(i, 10);
-    freeLinkedList(l);
+    freeLinkedList(l, &f);
     std::cout << "hi";
     return 0;
 }
