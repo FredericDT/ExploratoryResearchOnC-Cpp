@@ -178,7 +178,7 @@ namespace fdt {
          */
         template<typename T>
         class RemoveOnlyLoopList : printAbleObject {
-        public:
+        private:
             /**
              * @class Node
              *
@@ -229,8 +229,6 @@ namespace fdt {
                 }
 
             };
-
-        private:
             /**
              * @constructor
              *
@@ -371,6 +369,7 @@ namespace fdt {
                         delete t;
                     }
                 }
+                delete this->head->value;
                 delete this->head;
             }
         };
