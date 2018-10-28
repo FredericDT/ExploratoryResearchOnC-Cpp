@@ -178,6 +178,58 @@ namespace fdt {
          */
         template<typename T>
         class RemoveOnlyLoopList : printAbleObject {
+        public:
+            /**
+             * @class Node
+             *
+             * implement of data node
+             */
+            class Node : printAbleObject {
+            public:
+                Node() {
+                }
+
+                Node(T *v) : value(v) {}
+
+                ~Node() {}
+
+                Node *next;
+
+                T *value;
+
+                /**
+                 * @return std::string
+                 * @override printAbleObject::to_string()
+                 *
+                 * convert object's fields into a std::string
+                 */
+                std::string to_string() override {
+                    return this->value->to_string();
+                }
+
+                /**
+                 * @return bool
+                 *
+                 * a function to perform equality analyze
+                 * return 1 for left.value == right.value
+                 */
+                bool operator==(const Node &rhs) const {
+                    return this->value == rhs.value;
+                }
+
+                /**
+                 * @return bool
+                 * @see bool operator==(const Node &rhs) const
+                 *
+                 * return the opposite value of function
+                 * bool operator==(const Node &rhs) const
+                 */
+                bool operator!=(const Node &rhs) const {
+                    return !(rhs == *this);
+                }
+
+            };
+
         private:
             /**
              * @constructor
@@ -189,9 +241,15 @@ namespace fdt {
             }
 
             int size;
-            T **data;
-            int pos = 0;
+
+            class Node *head;
+
+            class Node *c;
+
+            class Node *p;
+
         public:
+
             /**
              * @return std::string
              * @override printAbleObject::to_string
@@ -200,9 +258,12 @@ namespace fdt {
              */
             std::string to_string() override {
                 std::ostringstream r;
-                for (int i = 0; i < this->size; ++i) {
-                    r << data[i]->to_string() << std::endl;
+                Node *n = this->head;
+                while (n->next != head) {
+                    r << n->to_string() << std::endl;
+                    n = n->next;
                 }
+                r << n->to_string() << std::endl;
                 return r.str();
             }
 
@@ -225,9 +286,15 @@ namespace fdt {
              * constructor for build a RemoveOnlyLoopList from T array
              */
             RemoveOnlyLoopList(int size, T *d[]) : size(size) {
-                data = new T *[size];
-                for (int i = 0; i < size; ++i) {
-                    data[i] = d[i];
+                this->head = new Node(d[0]);
+                this->head->next = this->head;
+                this->c = this->head;
+                Node *n = this->head;
+                for (int i = 1; i < size; ++i) {
+                    n->next = new Node(d[i]);
+                    n->next->next = this->head;
+                    n = n->next;
+                    this->p = n;
                 }
             }
 
@@ -246,7 +313,7 @@ namespace fdt {
              * return a pointer which pointing to the current node
              */
             T *current() {
-                return this->data[this->pos];
+                return this->c->value;
             }
 
             /**
@@ -256,10 +323,8 @@ namespace fdt {
              * return a pointer which pointing to the current node
              */
             T *next() {
-                ++this->pos;
-                if (this->pos >= this->size) {
-                    pos = 0;
-                }
+                this->c = this->c->next;
+                this->p = this->p->next;
                 return current();
             }
 
@@ -270,14 +335,12 @@ namespace fdt {
              * @notice You MUST free the returned node manually, otherwise it causes memory leak
              */
             T *remove() {
-                T *t = this->data[this->pos];
+                T *t = this->c->value;
+                Node *pr = this->c;
                 --this->size;
-                for (int i = pos; i < this->size; ++i) {
-                    this->data[i] = this->data[i + 1];
-                }
-                if (this->pos == this->size) {
-                    this->pos = 0;
-                }
+                this->p->next = this->c->next;
+                this->c = this->c->next;
+                delete pr;
                 return t;
             }
 
@@ -289,22 +352,27 @@ namespace fdt {
              * move the pos marker to the node which equals to target
              */
             FunctionStatus moveTo(T &t) {
-                for (int i = 0; i < this->size; ++i) {
-                    if (*this->data[i] == t) {
-                        this->pos = i;
-                        return FunctionStatus::SUCCESS;
-                    }
+                while (t != *this->current()) {
+                    this->next();
                 }
-                return FunctionStatus::FAILED;
+                return t == *this->current() ? FunctionStatus::SUCCESS : FunctionStatus::FAILED;
             }
 
             /**
              * @finalize
              */
             ~RemoveOnlyLoopList() {
-                delete[] this->data;
+                if (this->size > 1) {
+                    Node *n = this->head->next;
+                    while (n != this->head) {
+                        Node *t = n;
+                        n = n->next;
+                        delete t->value;
+                        delete t;
+                    }
+                }
+                delete this->head;
             }
-
         };
 
         /**
@@ -325,6 +393,7 @@ namespace fdt {
             RemoveOnlyLoopList<Person> *lp = new RemoveOnlyLoopList<Person>(size, ps);
             return lp;
         }
+
 
         /**
          * @enum JosephusFunctionStatus
