@@ -1,0 +1,12 @@
+cmake .
+cmake --build .
+cat << EOF | ./cpp14
+6
+1 n1 m 1
+2 n2 f 1
+3 n3 m 1
+4 n4 f 1
+5 n5 m 1
+6 n6 f 1
+1 5 1
+EOF
