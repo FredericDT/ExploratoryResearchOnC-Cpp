@@ -50,6 +50,10 @@ author 田维翰 2017211417
     提供删除，移动，移动至，获取当前value方法，详见代码注释
     
 `fdt::josephus::josephus()` 符合题意的 josephus 方法主体
+
+## Runtime Capture
+![Runtime Capture](Capture.PNG)
+
 ## Reference
 [1]第一次实验.ppt page4 循环链表  
 [2]第一次实验.ppt page4 从键盘输入人数N（N<50）
