@@ -338,6 +338,9 @@ namespace fdt {
                 --this->size;
                 this->p->next = this->c->next;
                 this->c = this->c->next;
+                if (pr == this->head) {
+                    this->head = this->c;
+                }
                 delete pr;
                 return t;
             }
