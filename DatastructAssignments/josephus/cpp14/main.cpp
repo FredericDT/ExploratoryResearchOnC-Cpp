@@ -180,6 +180,7 @@ namespace fdt {
              * @class Node
              *
              * implement of data node
+             * be transparent to outside of class RemoveOnlyLoopList
              */
             class Node : printAbleObject {
             public:
@@ -350,7 +351,8 @@ namespace fdt {
              * move the pos marker to the node which equals to target
              */
             FunctionStatus moveTo(T &t) {
-                while (t != *this->current()) {
+                Node *s = this->p;
+                while (s != this->current() && t != *this->current()) {
                     this->next();
                 }
                 return t == *this->current() ? FunctionStatus::SUCCESS : FunctionStatus::FAILED;
@@ -375,7 +377,7 @@ namespace fdt {
         };
 
         /**
-         * @return RemvoeOnlyLoopList<Person> *
+         * @return RemoveOnlyLoopList<Person> *
          *
          * build a list for Person from stdin
          * intended for the assignment
@@ -396,6 +398,10 @@ namespace fdt {
 
         /**
          * @enum JosephusFunctionStatus
+         * @value SUCCESS
+         *   represent the function goes well
+         * @value FAIL
+         *   represent the function failed
          *
          * function runtime status for JosephusFunctionStatus namespace
          */
