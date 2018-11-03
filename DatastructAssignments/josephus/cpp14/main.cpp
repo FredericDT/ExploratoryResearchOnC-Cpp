@@ -11,8 +11,6 @@
  */
 
 #include <iostream>
-#include <cctype>
-#include <string>
 #include <sstream>
 #include <cassert>
 
@@ -114,7 +112,7 @@ namespace fdt {
                 std::cout << "Please input p age: " << std::endl;
                 int age;
                 std::cin >> age;
-                Person *p = new class Person(id, name, gender, age);
+                auto *p = new class Person(id, name, gender, age);
                 return p;
             }
 
@@ -133,8 +131,7 @@ namespace fdt {
                 return r.str();
             }
 
-            ~Person() {
-            }
+            ~Person() = default;
 
             /**
              * @deprecated
@@ -183,15 +180,15 @@ namespace fdt {
              * @class Node
              *
              * implement of data node
+             * be transparent to outside of class RemoveOnlyLoopList
              */
             class Node : printAbleObject {
             public:
-                Node() {
-                }
+                Node() = default;
 
-                Node(T *v) : value(v) {}
+                explicit Node(T *v) : value(v) {}
 
-                ~Node() {}
+                ~Node() = default;
 
                 Node *next;
 
@@ -229,14 +226,15 @@ namespace fdt {
                 }
 
             };
+
             /**
              * @constructor
              *
              * this constructor should not be accessd from outside of this class
              */
-            RemoveOnlyLoopList() {
+            RemoveOnlyLoopList() : size(0) {
                 throw "DEFAULT CONSTRUCTOR INVOKED ERROR";
-            }
+            };
 
             int size;
 
@@ -338,6 +336,9 @@ namespace fdt {
                 --this->size;
                 this->p->next = this->c->next;
                 this->c = this->c->next;
+                if (pr == this->head) {
+                    this->head = this->c;
+                }
                 delete pr;
                 return t;
             }
@@ -350,7 +351,8 @@ namespace fdt {
              * move the pos marker to the node which equals to target
              */
             FunctionStatus moveTo(T &t) {
-                while (t != *this->current()) {
+                Node *s = this->p;
+                while (s != this->current() && t != *this->current()) {
                     this->next();
                 }
                 return t == *this->current() ? FunctionStatus::SUCCESS : FunctionStatus::FAILED;
@@ -375,7 +377,7 @@ namespace fdt {
         };
 
         /**
-         * @return RemvoeOnlyLoopList<Person> *
+         * @return RemoveOnlyLoopList<Person> *
          *
          * build a list for Person from stdin
          * intended for the assignment
@@ -385,17 +387,21 @@ namespace fdt {
             std::cout << "Please input list size: " << std::endl;
             std::cin >> size;
             assert(size > 0 && size < MAX_LIST_SIZE);
-            Person **ps = new Person *[size];
+            auto **ps = new Person *[size];
             for (int i = 0; i < size; ++i) {
                 ps[i] = Person::buildPFromStdin();
             }
-            RemoveOnlyLoopList<Person> *lp = new RemoveOnlyLoopList<Person>(size, ps);
+            auto *lp = new RemoveOnlyLoopList<Person>(size, ps);
             return lp;
         }
 
 
         /**
          * @enum JosephusFunctionStatus
+         * @value SUCCESS
+         *   represent the function goes well
+         * @value FAIL
+         *   represent the function failed
          *
          * function runtime status for JosephusFunctionStatus namespace
          */
@@ -410,6 +416,7 @@ namespace fdt {
          */
         JosephusFunctionStatus josephus() {
             RemoveOnlyLoopList<Person> *l = buildPListForJosephus();
+            assert(l);
             std::cout << "List values: " << std::endl << l->to_string();
             int startId;
             std::cout << "Please input S: " << std::endl;
@@ -417,20 +424,17 @@ namespace fdt {
             int m;
             std::cout << "Please input M: " << std::endl;
             std::cin >> m;
+            assert(m > 0);
             int remain;
             --m;
             std::cout << "Please input X: " << std::endl;
             std::cin >> remain;
+            assert(remain >= 0);
 
             Person p;
             p.id = startId;
 
             if (RemoveOnlyLoopList<Person>::FunctionStatus::FAILED == l->moveTo(p)) {
-                delete l;
-                return FAIL;
-            }
-
-            if (l->length() < remain) {
                 delete l;
                 return FAIL;
             }
@@ -444,6 +448,7 @@ namespace fdt {
                 std::cout << " id: " << t->id << std::endl;
                 delete t;
             }
+
             std::cout << "Remain members: " << std::endl << l->to_string();
             delete l;
             return SUCCESS;
