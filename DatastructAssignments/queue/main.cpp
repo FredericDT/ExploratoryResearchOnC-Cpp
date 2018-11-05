@@ -4,12 +4,21 @@ template<typename T>
 class Queue {
 private:
     unsigned length = 0;
-    unsigned size;
     T *datas;
     unsigned rear = 0;
-    unsigned front = 0;
+    //unsigned front = 0;
 public:
+    const unsigned size;
+
     static const unsigned DEFAULT_SIZE = 20;
+
+    unsigned front() {
+        int f = this->rear - this->length;
+        if (f < 0) {
+            f += this->size;
+        }
+        return (unsigned)f;
+    }
 
     Queue() : size(DEFAULT_SIZE) {
         this->datas = new T[size];
@@ -35,19 +44,19 @@ public:
         if (this->isEmpty()) {
             return 0;
         }
-        return this->datas[this->front];
+        return this->datas[this->front()];
     }
 
     T pull() {
         if (this->isEmpty()) {
             return 0;
         }
+        unsigned t = this->front();
         --this->length;
-        unsigned t = this->front;
-        ++this->front;
-        if (this->front >= this->size) {
-            this->front = 0;
-        }
+//        ++this->front;
+//        if (this->front >= this->size) {
+//            this->front = 0;
+//        }
         return this->datas[t];
     }
 
@@ -69,3 +78,18 @@ public:
         return this->length;
     }
 };
+
+int main() {
+    auto *q = new Queue<int>();
+    std::cout << "size=" << q->size << std::endl;
+    for (int i = 0; i < q->size; ++i) {
+        q->push(i);
+        std::cout << "pushed " << i << std::endl;
+        std::cout << "top " << q->top() << std::endl;
+        if (1) {
+            int t = q->pull();
+            std::cout << "pulled " << t << std::endl;
+        }
+    }
+    delete q;
+}
