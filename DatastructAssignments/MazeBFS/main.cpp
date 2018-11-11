@@ -377,8 +377,9 @@ int main() {
     std::cout << "loaded" << std::endl;
     std::cout << m << std::endl;
     std::vector<unsigned> result; // result container
-    fdt::Maze::searchForShortestPath(m, result); // search interface implementation : bfs
-    std::cout << "length: " << result.size() << std::endl; // output the length
+    bool found = fdt::Maze::searchForShortestPath(m, result); // search interface implementation : bfs
+    assert(found);
+    std::cout << "length: " << (result.size() - 1) << std::endl; // output the length
     std::cout << "path: "; // print the path
     for (unsigned &i : result) {
         std::cout << i << " ";
