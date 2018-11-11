@@ -21,6 +21,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <queue>
 
 namespace fdt {
     class Maze {
@@ -138,6 +139,34 @@ namespace fdt {
             }
             return 0;
         }
+
+        static bool bfs(Maze &m, std::vector<unsigned> &result) {
+            std::queue<std::vector<unsigned>> q = std::queue<std::vector<unsigned>>();
+            std::set<unsigned> visited = std::set<unsigned>();
+            q.push(std::vector<unsigned>({m.start}));
+            visited.insert(m.start);
+            while(!q.empty()) {
+                std::vector<unsigned> l = q.front();
+                for (auto &i : m.nodes[l.back()].to) {
+                    if (visited.find(i.id) == visited.end()) {
+                        visited.insert(i.id);
+                        std::vector<unsigned> n = l;
+                        n.push_back(i.id);
+                        if (i.isEnd) {
+                            result = n;
+                            return true;
+                        }
+                        q.push(n);
+                    }
+                }
+                q.pop();
+            }
+            return false;
+        }
+
+        static bool searchForShortestPath(Maze &m, std::vector<unsigned> &result) {
+            return bfs(m, result);
+        }
     };
 }
 
@@ -146,10 +175,18 @@ int main() {
     std::string nodes("nodes");
     std::string paths("paths");
     fdt::Maze::load(m, nodes, paths);
-    std::cout << "loaded";
+    std::cout << "loaded" << std::endl;
+    std::vector<unsigned> result;
+    fdt::Maze::searchForShortestPath(m, result);
+    std::cout << "length: " << result.size() << std::endl;
+    std::cout << "path: ";
+    for (unsigned &i : result) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
     std::string sn("sn");
     std::string sp("sp");
     fdt::Maze::serialize(m, sn, sp);
-    std::cout << "serialized";
+    std::cout << "serialized" << std::endl;
     return 0;
 }
