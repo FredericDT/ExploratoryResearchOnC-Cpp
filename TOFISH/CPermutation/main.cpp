@@ -6,6 +6,12 @@
 #include <iostream>
 #include <cmath>
 
+void fillUpWithZero(std::string &t, const unsigned targetLength) {
+    while (t.length() < targetLength) {
+        t = "0" + t;
+    }
+}
+
 int main() {
     int n;
     std::cout << "input: ";
@@ -66,6 +72,13 @@ int main() {
             }
         }
     }
-    std::cout << "output1 = " << minimumDistantValueTo4 << std::endl;
-    std::cout << "output2 = " << minimumDistantValueTo6 << std::endl;
+
+    std::string s4 = std::to_string(minimumDistantValueTo4);
+    std::string s6 = std::to_string(minimumDistantValueTo6);
+
+    fillUpWithZero(s4, 5);
+    fillUpWithZero(s6, 5);
+
+    std::cout << "output1 = " << s4 << std::endl;
+    std::cout << "output2 = " << s6 << std::endl;
 }
