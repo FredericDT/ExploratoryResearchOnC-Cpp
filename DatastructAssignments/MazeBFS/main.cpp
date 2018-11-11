@@ -71,9 +71,9 @@ namespace fdt {
 
         explicit Maze() : nodes(), paths() {}
 
-        static int load(class Maze &maze, std::string &pathOfNodeSize, std::string &pathOfPaths) {
+        static int load(class Maze &maze, std::string &pathOfNodes, std::string &pathOfPaths) {
             std::ifstream file;
-            file.open(pathOfNodeSize);
+            file.open(pathOfNodes);
             if (file.is_open()) {
                 while(!file.eof() && file.good()) {
                     unsigned id = 0;
@@ -106,9 +106,9 @@ namespace fdt {
             return 0;
         }
 
-        static int serialize(class Maze &maze, std::string &pathOfNodeSize, std::string &pathOfPaths) {
+        static int serialize(class Maze &maze, std::string &pathOfNodes, std::string &pathOfPaths) {
             std::ofstream file;
-            file.open(pathOfNodeSize);
+            file.open(pathOfNodes);
 
             if (file.is_open()) {
                 for (auto &i : maze.nodes) {
@@ -116,7 +116,7 @@ namespace fdt {
                 }
                 file.close();
             } else {
-                throw "Cant open " + pathOfNodeSize;
+                throw "Cant open " + pathOfNodes;
             }
             std::set<std::set<unsigned>> pool;
             file.open(pathOfPaths);
