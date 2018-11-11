@@ -26,20 +26,20 @@ int main() {
     int N;
     int minimumDistanceTo4 = -1;
     int minimumDistanceTo6 = -1;
-    for (int A = 0; A < 6; ++A) {
-        for (int B = 0; B < 6; ++B) {
+    for (int A = 0; A < 5; ++A) {
+        for (int B = 0; B < 5; ++B) {
             if (B == A) {
                 continue;
             }
-            for (int C = 0; C < 6; ++C) {
+            for (int C = 0; C < 5; ++C) {
                 if (C == A || C == B) {
                     continue;
                 }
-                for (int D = 0; D < 6; ++D) {
+                for (int D = 0; D < 5; ++D) {
                     if (A == D || B == D || C == D) {
                         continue;
                     }
-                    for (int E = 0; E < 6; ++E) {
+                    for (int E = 0; E < 5; ++E) {
                         if (A == E || B == E || C == E || D == E) {
                             continue;
                         }
