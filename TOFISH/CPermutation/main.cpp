@@ -24,8 +24,8 @@ int main() {
         t /= 10;
     }
     int N;
-    int minimumDistanceTo4 = -1;
-    int minimumDistanceTo6 = -1;
+    int minimumDistantValueTo4 = -1;
+    int minimumDistantValueTo6 = -1;
     for (int A = 0; A < 5; ++A) {
         for (int B = 0; B < 5; ++B) {
             if (B == A) {
@@ -45,20 +45,20 @@ int main() {
                         }
                         N = 10000 * p[A] + 1000 * p[B] + 100 * p[C] + 10 * p[D] + p[E];
 
-                        if (minimumDistanceTo4 >= 0) {
-                            if (abs(N - 40000) < abs(minimumDistanceTo4 - 40000)) {
-                                minimumDistanceTo4 = N;
+                        if (minimumDistantValueTo4 >= 0) {
+                            if (abs(N - 40000) < abs(minimumDistantValueTo4 - 40000)) {
+                                minimumDistantValueTo4 = N;
                             }
                         } else {
-                            minimumDistanceTo4 = N;
+                            minimumDistantValueTo4 = N;
                         }
 
-                        if (minimumDistanceTo6 >= 0) {
-                            if (abs(N - 60000) < abs(minimumDistanceTo6 - 60000)) {
-                                minimumDistanceTo6 = N;
+                        if (minimumDistantValueTo6 >= 0) {
+                            if (abs(N - 60000) < abs(minimumDistantValueTo6 - 60000)) {
+                                minimumDistantValueTo6 = N;
                             }
                         } else {
-                            minimumDistanceTo6 = N;
+                            minimumDistantValueTo6 = N;
                         }
 
                     }
@@ -66,6 +66,6 @@ int main() {
             }
         }
     }
-    std::cout << "output1 = " << minimumDistanceTo4 << std::endl;
-    std::cout << "output2 = " << minimumDistanceTo6 << std::endl;
+    std::cout << "output1 = " << minimumDistantValueTo4 << std::endl;
+    std::cout << "output2 = " << minimumDistantValueTo6 << std::endl;
 }
