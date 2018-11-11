@@ -108,7 +108,7 @@ namespace fdt {
              * helper function to stream output the data of this node
              */
             friend std::ostream &operator<<(std::ostream &os, const Node &node) {
-                os << "id: " << node.id << " associatedNodesSet: ";
+                os << "id: " << node.id << " isEnd: " << node.isEnd << " associatedNodesSet: ";
                 for (auto i : node.associatedNodesSet) {
                     os << i->id << " ";
                 }
