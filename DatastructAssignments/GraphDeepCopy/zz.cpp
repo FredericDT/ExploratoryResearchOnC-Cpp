@@ -30,6 +30,11 @@ namespace fdt {
             return;
         }
         target.type = LIST;
+        if (!source.pointers.headPointer) {
+            target.pointers.headPointer = nullptr;
+            target.pointers.tailPointer = nullptr;
+            return;
+        }
         target.pointers.headPointer = new GrandListNode<T>();
         copy(*target.pointers.headPointer, *source.pointers.headPointer);
         if (source.pointers.tailPointer) {
