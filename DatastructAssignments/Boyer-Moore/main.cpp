@@ -15,6 +15,32 @@ namespace fdt {
         return s == p || p == '*';
     }
 
+    long indexOf(std::string const &source, std::string const &pattern, long startIndex) {
+        for (long i = startIndex; i < source.length(); ++i) {
+            long ii = i;
+            long j = 0;
+            while(j < pattern.length() && pattern[j] == source[ii]) {
+                ++j;
+                ++ii;
+            }
+            if (j >= pattern.length()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    std::vector<long> getAllIndexsOf(std::string const &source, std::string const &pattern) {
+        long i = -pattern.length();
+        i = indexOf(source, pattern, i + pattern.length());
+        std::vector<long> v{};
+        while(i >= 0) {
+            v.push_back(i);
+            i = indexOf(source, pattern, i + pattern.length());
+        }
+        return v;
+    }
+
     class BoyerMoorePattern {
     private:
         BoyerMoorePattern() : eqf(nullptr) {
@@ -35,6 +61,7 @@ namespace fdt {
             }
         }
 
+        // horspool
         long getBadPatternIndex(long index, char target) {
             if (index > 0) {
                 std::map<char, long> m = this->badCharacterMaps[index - 1];
@@ -45,35 +72,46 @@ namespace fdt {
 
         bool (*eqf)(char s, char p);
 
+        long *goodEquals;
+
+        void parseGoodSuffix() {
+            for (long i = 1; i < pattern.length(); ++i) {
+                for (long j = 0; j < i; ++j) {
+                    long ii = i;
+                    long jj = j;
+                    while (ii < pattern.length() && pattern[ii] == pattern[jj]) {
+                        ++ii;
+                        ++jj;
+                    }
+                    if (ii >= pattern.length()) {
+                        goodEquals[i - 1] = j + pattern.length();
+                    } else {
+                        goodEquals[i - 1] = -1;
+                    }
+                }
+            }
+            for (long k = 0; k < pattern.length(); ++k) {
+                if (goodEquals[k] < 0) {
+                    for (long i = k + 1; i < pattern.length(); ++i) {
+                        if (goodEquals[i] >= 0) {
+                            goodEquals[k] = goodEquals[i];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
     public:
         BoyerMoorePattern(std::string const &pattern, bool (*equalsFunction)(char s, char p))
                 : badCharacterMaps{}, eqf(equalsFunction) {
             this->pattern = std::string(pattern);
+            this->goodEquals = new long[pattern.length()];
             this->initBadCharacterMap();
+            this->parseGoodSuffix();
         }
 
         ~BoyerMoorePattern() = default;
-
-        void parseGoodSuffix(std::string const &pattern, long goodSuffix[]) {
-            for (long i = pattern.length() - 1; i >= 0; --i) {
-                long longestLength = 1;
-                long index = -1;
-                for (long j = i - 1; j >= 0; --j) {
-                    long ii = i;
-                    long jj = j;
-                    while (jj >= 0 && pattern[ii] == pattern[jj]) {
-                        --ii;
-                        --jj;
-                    }
-                    long cl = j - jj;
-                    if (cl >= longestLength) {
-                        longestLength = cl;
-                        index = j;
-                    }
-                }
-                goodSuffix[i] = index;
-            }
-        }
 
         long indexOf(std::string const &source, long startIndex) {
             if (startIndex < 0) {
@@ -92,9 +130,7 @@ namespace fdt {
                 if (currentPatternIndex < 0) {
                     return startIndex;
                 }
-//                long badPatternIndex = currentPatternIndex;
-//                char lastOfSource = source[currentSourceIndex];
-//                while (--badPatternIndex >= 0 && !eqf(lastOfSource, pattern[badPatternIndex]));
+
                 long badPatternIndex = getBadPatternIndex(currentPatternIndex, source[currentSourceIndex]);
                 long moveTo = startIndex + currentPatternIndex - badPatternIndex;
 
@@ -103,24 +139,9 @@ namespace fdt {
                     continue;
                 }
 
-//        long foundGoodHead = -1;
-//        long goodPatternStartBase = currentSourceIndex - 1;
-//        while (goodPatternStartBase < currentPatternIndex) {
-//            long goodPatternStart = goodPatternStartBase;
-//            long goodPatternEnd = currentPatternIndex;
-//            while (++goodPatternEnd < pattern.length() && eqf(pattern[goodPatternEnd], pattern[goodPatternStart++]));
-//            if (goodPatternEnd >= pattern.length()) {
-//                foundGoodHead = goodPatternStartBase + pattern.length() - currentPatternIndex;
-//                break;
-//            }
-//            if (foundGoodHead >= 0) {
-//                break;
-//            }
-//            ++goodPatternStartBase;
-//        }
-//        long goodMoveTo = startIndex + pattern.length() - 1 - foundGoodHead;
-//        moveTo = moveTo > goodMoveTo ? moveTo : goodMoveTo;
+                long goodMoveTo = startIndex + pattern.length() - 1 - goodEquals[currentPatternIndex];
 
+                moveTo = moveTo > goodMoveTo ? moveTo : goodMoveTo;
                 startIndex = moveTo;
             }
             return -1;
@@ -140,6 +161,16 @@ namespace fdt {
             return v;
         }
     };
+
+    std::string read_file_to_string(std::string const &path) {
+        std::ifstream inFile;
+        inFile.open(path);
+        std::stringstream stringStream;
+        stringStream << inFile.rdbuf();
+        std::string s = stringStream.str();
+        inFile.close();
+        return s;
+    }
 }
 
 int main(int argc, char **argv) {
@@ -154,12 +185,7 @@ int main(int argc, char **argv) {
             eqf = &fdt::equalsWithGeneric;
         }
     }
-    std::ifstream inFile;
-    inFile.open(argv[1]);
-    std::stringstream stringStream;
-    stringStream << inFile.rdbuf();
-    std::string s = stringStream.str();
-    inFile.close();
+    std::string s(fdt::read_file_to_string(argv[1]));
     std::string p(argv[2]);
 #else
     std::string s("HERE_IS_A_SIMPLE_EXAMPLE");
