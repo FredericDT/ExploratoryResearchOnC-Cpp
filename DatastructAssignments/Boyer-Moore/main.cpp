@@ -7,6 +7,7 @@
 //#define DEBUG
 
 namespace fdt {
+
     bool equals(char s, char p) {
         return s == p;
     }
@@ -15,31 +16,36 @@ namespace fdt {
         return s == p || p == '*';
     }
 
-    long indexOf(std::string const &source, std::string const &pattern, long startIndex) {
-        for (long i = startIndex; i < source.length(); ++i) {
-            long ii = i;
-            long j = 0;
-            while(j < pattern.length() && pattern[j] == source[ii]) {
-                ++j;
-                ++ii;
+    class BruteForce {
+    public:
+        static long
+        indexOf(std::string const &source, std::string const &pattern, long startIndex, bool (*eqf)(char s, char p)) {
+            for (long i = startIndex; i < source.length(); ++i) {
+                long ii = i;
+                long j = 0;
+                while (j < pattern.length() && eqf(source[ii], pattern[j])) {
+                    ++j;
+                    ++ii;
+                }
+                if (j >= pattern.length()) {
+                    return i;
+                }
             }
-            if (j >= pattern.length()) {
-                return i;
-            }
+            return -1;
         }
-        return -1;
-    }
 
-    std::vector<long> getAllIndexsOf(std::string const &source, std::string const &pattern) {
-        long i = -pattern.length();
-        i = indexOf(source, pattern, i + pattern.length());
-        std::vector<long> v{};
-        while(i >= 0) {
-            v.push_back(i);
-            i = indexOf(source, pattern, i + pattern.length());
+        static std::vector<long>
+        getAllIndexsOf(std::string const &source, std::string const &pattern, bool (*eqf)(char s, char p)) {
+            long i = -pattern.length();
+            i = indexOf(source, pattern, i + pattern.length(), eqf);
+            std::vector<long> v{};
+            while (i >= 0) {
+                v.push_back(i);
+                i = indexOf(source, pattern, i + pattern.length(), eqf);
+            }
+            return v;
         }
-        return v;
-    }
+    };
 
     class BoyerMoorePattern {
     private:
@@ -180,7 +186,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
     bool (*eqf)(char s, char p) = &fdt::equals;
-    if (argc == 4) {
+    if (argc >= 4) {
         if (*argv[3] == '1') {
             eqf = &fdt::equalsWithGeneric;
         }
@@ -188,12 +194,12 @@ int main(int argc, char **argv) {
     std::string s(fdt::read_file_to_string(argv[1]));
     std::string p(argv[2]);
 #else
-    std::string s("HERE_IS_A_SIMPLE_EXAMPLE");
-    std::string p("EXAMPLE");
+    std::string s(fdt::read_file_to_string("text"));//"HERE_IS_A_SIMPLE_EXAMPLE");
+    std::string p("was");//"EXAMPLE");
     bool (*eqf)(char s, char p) = &fdt::equals;
 #endif
     fdt::BoyerMoorePattern bmp(p, eqf);
-    std::vector<long> v = bmp.getAllIndexOf(s, 0);
+    std::vector<long> v = bmp.getAllIndexOf(s, 0);//fdt::BruteForce::getAllIndexsOf(s, p, eqf);
     for (auto &i : v) {
         std::cout << i << std::endl;
     }
