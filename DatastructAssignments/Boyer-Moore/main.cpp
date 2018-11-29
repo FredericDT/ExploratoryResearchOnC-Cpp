@@ -206,7 +206,7 @@ namespace fdt {
         long getBadPatternIndex(long index, char target) {
             // horspool
             if (index > 0) {
-                std::map<char, long> m = this->badCharacterMaps[index - 1];
+                std::map<char, long> &m = this->badCharacterMaps[index - 1];
                 return m.find(target) == m.end() ? -1 : m[target];
             }
             return -1;
