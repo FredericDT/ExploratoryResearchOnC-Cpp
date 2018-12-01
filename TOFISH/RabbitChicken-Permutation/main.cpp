@@ -5,7 +5,7 @@
 int main() {
     std::vector<unsigned> pool{0, 1, 3, 5};
     while (next_permutation(pool.begin(), pool.end())) {
-        if (pool[0] == 0) {
+        if (pool[0] == 0 || pool[2] == 0) {
             continue;
         }
         if (pool[0] * 10 + pool[1] == 2 * (pool[2] * 10 + pool[3])) {
