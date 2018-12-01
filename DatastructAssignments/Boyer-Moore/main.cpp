@@ -179,7 +179,7 @@ namespace fdt {
          *
          */
         void initBadCharacterMaps() {
-            for (long i = 1; i < pattern.length(); ++i) {
+            for (long i = 0; i < pattern.length(); ++i) {
                 std::map<char, long> cm{};
                 if (!this->badCharacterMaps.empty()) {
                     cm = this->badCharacterMaps[this->badCharacterMaps.size() - 1];
@@ -239,28 +239,28 @@ namespace fdt {
          *
          */
         void parseGoodSuffix() {
-            for (long i = 1; i < pattern.length(); ++i) {
-                for (long j = 0; j < i; ++j) {
-                    long ii = i;
-                    long jj = j;
-                    while (ii < pattern.length() && pattern[ii] == pattern[jj]) {
-                        ++ii;
-                        ++jj;
-                    }
-                    if (ii >= pattern.length()) {
-                        goodEquals[i - 1] = j + pattern.length();
-                    } else {
-                        goodEquals[i - 1] = -1;
-                    }
+            for (long l = 0; l < pattern.length(); ++l) {
+                goodEquals[l] = -1;
+            }
+            for (long j = 0; j < pattern.length() - 1; ++j) {
+                long jj = j;
+                long ii = pattern.length() - 1;
+                while(jj >= 0 && eqf(pattern[jj], pattern[ii])) {
+                    --jj;
+                    --ii;
+                }
+                if (jj < j) {
+                    goodEquals[ii] = j;
                 }
             }
-            for (long k = 0; k < pattern.length(); ++k) {
-                if (goodEquals[k] < 0) {
-                    for (long i = k + 1; i < pattern.length(); ++i) {
-                        if (goodEquals[i] >= 0) {
-                            goodEquals[k] = goodEquals[i];
-                            break;
-                        }
+            for (long i = 0; i < pattern.length(); ++i) {
+                if (goodEquals[i] >= 0) {
+                    continue;
+                }
+                for (long j = i + 1; j < pattern.length(); ++j) {
+                    if (goodEquals[j] >= 0) {
+                        goodEquals[i] = goodEquals[j];
+                        break;
                     }
                 }
             }

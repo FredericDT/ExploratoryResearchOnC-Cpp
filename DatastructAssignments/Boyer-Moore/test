@@ -1,0 +1,6 @@
+cmake .
+cmake --build .
+./Boyer_Moore text was > boyer_moore_stdout
+./Brute_Force text was > brute_force_stdout
+echo "diff is:"
+diff boyer_moore_stdout brute_force_stdout
