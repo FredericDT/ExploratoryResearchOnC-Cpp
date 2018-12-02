@@ -1,7 +1,10 @@
 #include <iostream>
+#include <iomanip>
 
 const unsigned rows = 4;
 const unsigned columns = 5;
+
+const int precision = 4;
 
 double matrix[rows][columns] = {
         {1.1161, 0.1254, 0.1397, 0.1490, 1.5471},
@@ -12,17 +15,18 @@ double matrix[rows][columns] = {
 
 int main() {
 
+    std::cout << std::fixed;
     //print
     std::cout << "MAT A = " << std::endl;
     for (int i = 0; i < rows; ++i) {
         for (int j = 1; j < columns; ++j) {
-            std::cout << "\t" << matrix[i][j - 1];
+            std::cout << "\t" << std::setprecision(precision) << matrix[i][j - 1];
         }
         std::cout << std::endl;
     }
     std::cout << "MAT B = " << std::endl;
     for (int i = 0; i < rows; ++i) {
-        std::cout << "\t" << matrix[i][columns - 1];
+        std::cout << "\t" << std::setprecision(precision) << matrix[i][columns - 1];
     }
     std::cout << std::endl;
 
@@ -47,7 +51,7 @@ int main() {
     }
 
     for (int i = 0; i < rows; ++i) {
-        std::cout << "x(" << i + 1 << ")=" << x[i] << std::endl;
+        std::cout << "x(" << i + 1 << ")=" << std::setprecision(precision) << x[i] << std::endl;
     }
 
     return 0;
