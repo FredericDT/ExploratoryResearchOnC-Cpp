@@ -421,5 +421,6 @@ int main(int argc, char **argv) {
     for (auto &i : v) {
         std::cout << i << std::endl;
     }
+    std::cout << std::endl << "count of all existence: " << v.size() << std::endl;
     return 0;
 }
