@@ -50,12 +50,12 @@ namespace fdt {
      * @param p char
      *   char from the pattern string
      *
-     * equals function with generic character '*'
-     * return true if p is '*' or p equals s
+     * equals function with generic character '?'
+     * return true if p is '?' or p equals s
      *
      */
     bool equalsWithGeneric(char s, char p) {
-        return s == p || p == '*';
+        return s == p || p == '?';
     }
 
     /**
