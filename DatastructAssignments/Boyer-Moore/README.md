@@ -40,5 +40,5 @@
 `std::string read_file_to_string(std::string const &path)` 文件读取 helper
 
 ## Runtime Capture
-![Runtime Capture](Capture.PNG)
+![Runtime Capture](Capture.png)
 
