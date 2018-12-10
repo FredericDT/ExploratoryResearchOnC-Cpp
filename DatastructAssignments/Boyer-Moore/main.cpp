@@ -207,7 +207,8 @@ namespace fdt {
             // horspool
             if (index > 0) {
                 std::map<char, long> &m = this->badCharacterMaps[index - 1];
-                return m.find(target) == m.end() ? -1 : m[target];
+                return m.find(target) == m.end() ? (this->eqf('a', '?') ? (m.find('?') == m.end() ? -1 : m['?']) : -1)
+                                                 : m[target];
             }
             return -1;
         }
@@ -245,7 +246,7 @@ namespace fdt {
             for (long j = 0; j < pattern.length() - 1; ++j) {
                 long jj = j;
                 long ii = pattern.length() - 1;
-                while(jj >= 0 && eqf(pattern[jj], pattern[ii])) {
+                while (jj >= 0 && eqf(pattern[jj], pattern[ii])) {
                     --jj;
                     --ii;
                 }
