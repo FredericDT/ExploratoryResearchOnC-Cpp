@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <string>
 
 /**
  * @Assignment
@@ -15,11 +17,19 @@ namespace fdt {
     class Map {
     public:
         static class Vertex {
+            unsigned id;
+            std::string name;
+            std::vector<Edge> connectedEdges;
 
+            Vertex(unsigned id, std::string const &name) : id(id), name(name), connectedEdges{} {}
+
+            ~Vertex() = default;
         };
         static class Edge {
-
+            std::pair<Vertex *, Vertex *> connectedVertexs;
+            unsigned distance;
         };
+        std::vector<Vertex> vertexs;
     };
 }
 
