@@ -31,15 +31,54 @@ namespace fdt {
     /**
      * @class Map
      *
-     * Entity of a map,
+     * Entity of a map
+     *
      */
     class Map {
     public:
+        /**
+         * @field std::map<unsigned, Vertex> vertexs;
+         *
+         * a vector of all the vertex presented in the map
+         *
+         */
         std::map<unsigned, Vertex> vertexs;
+
+        /**
+         * @field std::map<std::pair<unsigned, unsigned>, std::pair<unsigned, std::vector<Vertex *>>> computedDistances
+         *
+         * computed results storage
+         *
+         * generic type parameters
+         * std::map<
+         *  std::pair<vertex id 1, vertex id 2>,
+         *  std::pair<distance, path>
+         * >
+         *
+         */
         std::map<std::pair<unsigned, unsigned>, std::pair<unsigned, std::vector<Vertex *>>> computedDistances;
 
+        /**
+         * @constructor
+         *
+         * default constructor which intended to initialize an empty map
+         *
+         */
         Map() : vertexs{}, computedDistances{} {}
 
+        /**
+         * @static
+         * @function static Map load(std::string const &pathOfVertexs, std::string const &pathOfEdges)
+         *
+         * @return Map
+         *
+         * @param std::string const &pathOfEdges
+         *   path to the data file of edges
+         * @param std::String const &pathOfVertexs
+         *   path to the data file of vertexs
+         *
+         * de-serialize function
+         */
         static Map load(std::string const &pathOfVertexs, std::string const &pathOfEdges) {
             Map m = Map();
             std::ifstream vertexsFile;
@@ -64,12 +103,33 @@ namespace fdt {
             return m;
         }
 
+        /**
+         * @static
+         * @function static bool idDistanceCompare(const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &a,
+         *                            const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &b)
+         *
+         * @return bool
+         *
+         * @param const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &a
+         * @param const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &b
+         *
+         * lexical compare function
+         *
+         */
         static bool idDistanceCompare(const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &a,
                                       const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &b) {
             return a.second.first < b.second.first ||
                    (a.second.first == b.second.first && a.second.second.size() < a.second.second.size());
         }
 
+        /**
+         * @method void computeAllMinimunDistances()
+         *
+         * @return void
+         *
+         * call this method to compute all miniumDistances
+         *
+         */
         void computeAllMinimunDistances() {
             if (this->computedDistances.size() == this->vertexs.size() * this->vertexs.size()) {
                 return;
@@ -79,6 +139,19 @@ namespace fdt {
             }
         }
 
+        /**
+         * @method std::pair<unsigned, std::vector<Vertex *>> minimumDistance(unsigned id1, unsigned id2)
+         *
+         * @return std::pair<unsigned, std::vector<Vertex *>>
+         *
+         * @param unsigned id1
+         *   source vertex id
+         * @param unsigned id2
+         *   destination vertex id
+         *
+         * returns the minium distance between two vetexs with its path
+         *
+         */
         std::pair<unsigned, std::vector<Vertex *>> minimumDistance(unsigned id1, unsigned id2) {
             if (computedDistances.find(std::make_pair(id1, id2)) != computedDistances.end()) {
                 return computedDistances[std::make_pair(id1, id2)];
@@ -132,10 +205,17 @@ namespace fdt {
     };
 }
 
+/**
+ * @function main(int argc, char **argv)
+ *
+ * endpoint
+ *
+ */
 int main(int argc, char **argv) {
 #ifndef DEBUG
     if (argc != 3) {
         std::cout << "Usage: CampusMapDijkstra <path_to_vertexs_file> <path_to_edges_file>";
+        exit(1);
     }
     fdt::Map m = fdt::Map::load(argv[1], argv[2]);
 #else
