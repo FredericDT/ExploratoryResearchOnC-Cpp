@@ -12,7 +12,7 @@
 
 #define min(a, b) (a) > (b) ? (b) : (a)
 
-//#define DEBUG
+#define DEBUG
 
 /**
  * @Assignment
@@ -29,7 +29,7 @@ namespace fdt {
     class Map {
     public:
         std::map<unsigned, Vertex> vertexs;
-        std::map<std::pair<unsigned, unsigned>, unsigned> computedDistances;
+        std::map<std::pair<unsigned, unsigned>, std::pair<unsigned, std::vector<Vertex *>>> computedDistances;
 
         Map() : vertexs{}, computedDistances{} {}
 
@@ -57,8 +57,9 @@ namespace fdt {
             return m;
         }
 
-        static bool idDistanceCompare(const std::pair<unsigned, unsigned> &a, const std::pair<unsigned, unsigned> &b) {
-            return a.second < b.second;
+        static bool idDistanceCompare(const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &a,
+                                      const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &b) {
+            return a.second.first < b.second.first ? true : a.second.second.size() < a.second.second.size();
         }
 
         void computeAllMinimunDistances() {
@@ -70,7 +71,7 @@ namespace fdt {
             }
         }
 
-        unsigned minimumDistance(unsigned id1, unsigned id2) {
+        std::pair<unsigned, std::vector<Vertex *>> minimumDistance(unsigned id1, unsigned id2) {
             if (computedDistances.find(std::make_pair(id1, id2)) != computedDistances.end()) {
                 return computedDistances[std::make_pair(id1, id2)];
             }
@@ -78,13 +79,13 @@ namespace fdt {
             for (auto i = this->vertexs.begin(); i != this->vertexs.end(); ++i) {
                 setOfIdOfUnvisitedVertexs.insert(i->first);
             }
-            std::map<unsigned, unsigned> distances{};
+            std::map<unsigned, std::pair<unsigned, std::vector<Vertex *>>> distances{};
             for (auto j = setOfIdOfUnvisitedVertexs.begin(); j != setOfIdOfUnvisitedVertexs.end(); ++j) {
-                distances[*j] = UINT32_MAX;
+                distances[*j] = std::make_pair(UINT32_MAX, std::vector<Vertex *>{&this->vertexs[id1]});
             }
-            distances[id1] = 0;
+            distances[id1].first = 0;
             while (!setOfIdOfUnvisitedVertexs.empty()) {
-                std::vector<std::pair<unsigned, unsigned>> iDistances{};
+                std::vector<std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>>> iDistances{};
                 for (auto i = distances.begin(); i != distances.end(); ++i) {
                     iDistances.emplace_back(std::make_pair(i->first, i->second));
                 }
@@ -95,8 +96,14 @@ namespace fdt {
                     }
                     std::vector<Edge> &connectedEdges = this->vertexs[i->first].connectedEdges;
                     for (auto j = connectedEdges.begin(); j != connectedEdges.end(); ++j) {
-                        distances[j->connectedVertex->id] = min(i->second + j->distance,
-                                                                distances[j->connectedVertex->id]);
+                        std::vector<Vertex *> cPath = i->second.second;
+                        cPath.emplace_back(&this->vertexs[j->connectedVertex->id]);
+                        unsigned cDistance = i->second.first + j->distance;
+                        std::pair<unsigned, std::vector<Vertex *>> cPair = std::make_pair(cDistance, cPath);
+                        if (idDistanceCompare(std::make_pair(0, cPair),
+                                              std::make_pair(0, distances[j->connectedVertex->id]))) {
+                            distances[j->connectedVertex->id] = cPair;
+                        }
                     }
                     setOfIdOfUnvisitedVertexs.erase(i->first);
                     break;
@@ -104,8 +111,12 @@ namespace fdt {
             }
             for (auto i = distances.begin(); i != distances.end(); ++i) {
                 computedDistances.insert(std::make_pair(std::make_pair(id1, i->first), distances[i->first]));
-                if (i->first != id1) {
-                    computedDistances.insert(std::make_pair(std::make_pair(i->first, id1), distances[i->first]));
+                if (i->first != id1 &&
+                    computedDistances.find(std::make_pair(i->first, id1)) == computedDistances.end()) {
+                    std::vector<Vertex *> rPath = distances[i->first].second;
+                    std::reverse(rPath.begin(), rPath.end());
+                    computedDistances.insert(std::make_pair(std::make_pair(i->first, id1),
+                                                            std::make_pair(distances[i->first].first, rPath)));
                 }
             }
             return computedDistances[std::make_pair(id1, id2)];
@@ -125,8 +136,12 @@ int main(int argc, char **argv) {
     m.computeAllMinimunDistances();
     for (auto i = m.vertexs.begin(); i != m.vertexs.end(); ++i) {
         for (auto j = m.vertexs.begin(); j != m.vertexs.end(); ++j) {
-            std::cout << i->second.name << " -> " << j->second.name << " " << m.minimumDistance(i->first, j->first)
-                      << std::endl;
+            std::pair<unsigned, std::vector<fdt::Vertex *>> result = m.minimumDistance(i->first, j->first);
+            std::cout << i->second.name << " -> " << j->second.name << " " << result.first << ": ";
+            for (auto k = result.second.begin(); k != result.second.end(); ++k) {
+                std::cout << (*k)->name << " ";
+            }
+            std::cout << std::endl;
         }
     }
     return 0;
