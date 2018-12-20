@@ -22,7 +22,17 @@
  *
  */
 
+/**
+ * @author FredericDT <frederic.dt.twh@gmail.com> DA8F097136E9AD8A
+ * @date 20/12/2018
+ *
+ */
 namespace fdt {
+    /**
+     * @class Map
+     *
+     * Entity of a map,
+     */
     class Map {
     public:
         std::map<unsigned, Vertex> vertexs;
@@ -56,7 +66,8 @@ namespace fdt {
 
         static bool idDistanceCompare(const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &a,
                                       const std::pair<unsigned, std::pair<unsigned, std::vector<Vertex *>>> &b) {
-            return a.second.first < b.second.first ? true : a.second.second.size() < a.second.second.size();
+            return a.second.first < b.second.first ||
+                   (a.second.first == b.second.first && a.second.second.size() < a.second.second.size());
         }
 
         void computeAllMinimunDistances() {
