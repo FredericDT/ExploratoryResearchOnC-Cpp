@@ -5,14 +5,11 @@
 #include <limits>
 #include <set>
 #include <algorithm>
-#include <functional>
 
 #include "Edge.h"
 #include "Vertex.h"
 
-#define min(a, b) (a) > (b) ? (b) : (a)
-
-#define DEBUG
+//#define DEBUG
 
 /**
  * @Assignment
