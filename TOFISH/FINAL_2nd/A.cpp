@@ -2,6 +2,8 @@
 #include <vector>
 #include <cmath>
 
+//n
+
 int main() {
     int i;
     std::vector<unsigned> v;

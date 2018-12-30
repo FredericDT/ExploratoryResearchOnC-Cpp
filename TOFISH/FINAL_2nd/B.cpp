@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 
+//2^n
+
 int n;
 int *a;
 
