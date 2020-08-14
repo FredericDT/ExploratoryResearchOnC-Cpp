@@ -126,7 +126,7 @@ int main() {
                     sem_post(sem_space_B);
                     sem_post(sem_space_total);
                 }
-                iprintf("COMSUMER_EVENT: product_count = %d\n", ++product_count);
+                iprintf("COMSUMER_EVENT: product_count = %ld\n", ++product_count);
             }
             
             sem_post(sem_mutex);
