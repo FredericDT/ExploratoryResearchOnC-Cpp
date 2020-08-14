@@ -13,7 +13,6 @@
 #include <unistd.h>          /* For sleep */
 #include <sys/types.h>
 #include <signal.h>
-#include <fcntl.h>
 
 #include <sys/wait.h>        /* For wait */
 
