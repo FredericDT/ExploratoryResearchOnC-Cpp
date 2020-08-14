@@ -12,7 +12,7 @@ void handler(int t) {
 
 int main() {
 	
-	struct sigaction action = { &handler, NULL, NULL, 0, NULL };
+	struct sigaction action = { &handler, 0, 0, NULL, NULL };
 
 	sigaction(SIGQUIT, &action, NULL);
 

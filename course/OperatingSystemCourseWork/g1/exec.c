@@ -1,4 +1,5 @@
 #include<unistd.h>
+#include <stdio.h>
 int main(int argc, char *argv[]) {
 	char *envp[]={"PATH=/tmp","USER=1ei", "STATUS = testing", NULL};
 	char *argv_execv[]={"echo", "excuted by execv", NULL};
