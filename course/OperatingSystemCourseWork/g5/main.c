@@ -20,6 +20,10 @@
 #include "semaphore_definitions.h"
 #include "trace_error.h"
 
+#define PRODUCE_A_SLEEP_PERIOD 3
+#define PRODUCE_B_SLEEP_PERIOD 2
+#define COMSUMER_SLEEP_PERIOD 5
+
 #define CREATE_SEM(sem_target, name, oflag, mode, value) if ((sem_target = sem_open(name, oflag, mode, value)) == SEM_FAILED) { eprintf("%s\n", strerror(errno)); exit(errno); }
 
 int quit = 1;
@@ -54,7 +58,7 @@ int main() {
     iprintf("mutex_sval = %d, space_total_sval = %d, space_A_sval = %d, space_B_sval = %d, storage_A_sval = %d, storage_B_sval = %d\n", 
         mutex_sval, space_total_sval, space_A_sval, space_B_sval, storage_A_sval, storage_B_sval);
 
-    struct sigaction action = { &handler, 0, 0, 0, 0 };
+    struct sigaction action = { .sa_handler = &handler, .sa_mask = 0, .sa_flags = 0, .sa_restorer = NULL };
     sigaction(SIGINT, &action, NULL);
     
     if (fork() == 0) {
@@ -74,11 +78,11 @@ int main() {
                     sem_post(sem_storage_A);
                     sem_wait(sem_space_total);
                 }
-                iprintf("PART_A_PRODUCE_EVENT\n");
+                iprintf("PART_A_PRODUCE_EVENT A: %d | B: %d | E: %d\n", SEM_SPACE_A_INIT_VALUE - space_A_sval + PART_A_PER_TIME_PRODUCE, SEM_SPACE_TOTAL_INIT_VALUE - space_total_sval + PART_A_PER_TIME_PRODUCE - SEM_SPACE_A_INIT_VALUE + space_A_sval - PART_A_PER_TIME_PRODUCE, space_total_sval - PART_A_PER_TIME_PRODUCE);
             }
             
             sem_post(sem_mutex);
-            sleep(1);
+            sleep(PRODUCE_A_SLEEP_PERIOD);
         }
 
         iprintf("PRODUCE_A_END\n");
@@ -98,11 +102,11 @@ int main() {
                     sem_post(sem_storage_B);
                     sem_wait(sem_space_total);
                 }
-                iprintf("PART_B_PRODUCE_EVENT\n");
+                iprintf("PART_B_PRODUCE_EVENT A: %d | B: %d | E: %d\n", SEM_SPACE_TOTAL_INIT_VALUE - space_total_sval + PART_B_PER_TIME_PRODUCE - SEM_SPACE_B_INIT_VALUE + space_B_sval - PART_B_PER_TIME_PRODUCE, SEM_SPACE_B_INIT_VALUE - space_B_sval + PART_B_PER_TIME_PRODUCE, space_total_sval - PART_B_PER_TIME_PRODUCE);
             }
             
             sem_post(sem_mutex);
-            sleep(1);
+            sleep(PRODUCE_B_SLEEP_PERIOD);
         }
         iprintf("PROCUDE_B_END\n");
     } else if (fork() == 0) { 
@@ -126,11 +130,11 @@ int main() {
                     sem_post(sem_space_B);
                     sem_post(sem_space_total);
                 }
-                iprintf("COMSUMER_EVENT: product_count = %ld\n", ++product_count);
+                iprintf("COMSUMER_EVENT: product_count = %ld A: %d | B: %d | E: %d\n", ++product_count, storage_A_sval - PART_A_REQUIRED, storage_B_sval - PART_B_REQUIRED, SEM_SPACE_TOTAL_INIT_VALUE - storage_A_sval + PART_A_REQUIRED - storage_B_sval + PART_B_REQUIRED);
             }
             
             sem_post(sem_mutex);
-            sleep(1);
+            sleep(COMSUMER_SLEEP_PERIOD);
             
         }
         iprintf("COMSUMER_END\n");
@@ -156,3 +160,4 @@ int main() {
     }
     return 0;
 }
+
