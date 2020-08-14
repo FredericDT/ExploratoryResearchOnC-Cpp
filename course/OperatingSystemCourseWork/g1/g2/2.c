@@ -10,9 +10,9 @@ void func() {
 }
 
 int main() {
-	int i, j;
+	int i;
 	signal(17, func); 
-	if (i = fork()) {
+	if ((i = fork())) {
 		printf("Parent:Signal 17 will be send to child!\n"); 
 		kill(i, 17); 
 		wait(NULL); 

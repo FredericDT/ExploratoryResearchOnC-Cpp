@@ -5,7 +5,7 @@
 int main() {
 	int i, j, k;
 	int wstats;
-	if (i = fork()) {
+	if ((i = fork())) {
 		j = wait(&wstats);
 		printf("Parent process！\n");
 		printf("i=%d  j=%d\n", i, j);
