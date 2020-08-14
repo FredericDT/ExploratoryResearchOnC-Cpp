@@ -9,10 +9,8 @@
 #include "shm_struct.h"
 
 int main(int argc, char** argv) {
-	int shm_id, i;
+	int shm_id;
 	key_t key;
-	char temp[8];
-	struct people *people_shm_map;
 	char pathname[30];
 	strcpy(pathname, "/tmp\0");
 	
